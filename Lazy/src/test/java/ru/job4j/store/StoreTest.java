@@ -58,8 +58,10 @@ public class StoreTest {
             model.add(brand);
             store.add(model);
         }
-        for (ModelAuto model : store.getAllModels()) {
-            System.out.println("Model name = " + model);
+        for (Brand brand : store.getAllBrands()) {
+            for (ModelAuto model : brand.getModels()) {
+                System.out.println("Model name = " + model);
+            }
         }
     }
 

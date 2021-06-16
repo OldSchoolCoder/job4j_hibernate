@@ -47,16 +47,7 @@ public class HBStore implements Store, AutoCloseable {
     }
 
     @Override
-    public List<ModelAuto> getAllModels() {
-        return this.wrapper(session -> {
-            List<ModelAuto> models = new ArrayList<>();
-            List<Brand> brands = session.createQuery("from Brand").list();
-            for (Brand brand : brands) {
-                for (ModelAuto modelAuto : brand.getModels()) {
-                    models.add(modelAuto);
-                }
-            }
-            return models;
-        });
+    public List<Brand> getAllBrands() {
+        return this.wrapper(session -> session.createQuery("select distinct b from Brand b join fetch b.models").list());
     }
 }
