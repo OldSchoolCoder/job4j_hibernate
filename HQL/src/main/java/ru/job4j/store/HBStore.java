@@ -57,14 +57,20 @@ public class HBStore implements Store, AutoCloseable {
         return Optional.ofNullable(Candidate);
     }
 
-    public Optional<Candidate> findByName(String name) {
-        Candidate Candidate = (Candidate) this.wrapper(session -> {
+    public List<Candidate> findByName(String name) {
+        return this.wrapper(session -> {
             final Query query = session.createQuery("from Candidate where name=:fName");
             query.setParameter("fName", name);
-            return query.uniqueResult();
+            return query.list();
         });
-        return Optional.ofNullable(Candidate);
     }
+//        List<Candidate> Candidate = this.wrapper(session -> {
+//            final Query query = session.createQuery("from Candidate where name=:fName");
+//            query.setParameter("fName", name);
+//            return query.list();
+//        });
+//        return Candidate;
+
 
     public void update(Integer id, String name, Integer experience, Integer salary) {
         this.wrapper(session -> session.createQuery("update Candidate c " +

@@ -73,15 +73,15 @@ public class TestHB {
 
     @Test
     public void findByNameTest() {
-        Optional<Candidate> candidateOptional = store.findByName("Ben");
-        Assert.assertTrue(candidateOptional.isPresent());
+        List<Candidate> candidates = store.findByName("Ben");
+        Assert.assertTrue(candidates.get(0).getName().equals("Ben"));
     }
 
     @Test
     public void updateTest() {
         store.update(7, "Mike", 8, 888);
-        Optional<Candidate> candidateOptional = store.findByName("Mike");
-        Assert.assertTrue(candidateOptional.isPresent());
+        Candidate result = store.findById(7).orElse(new Candidate());
+        Assert.assertTrue(result.getName().equals("Mike"));
     }
 
     @Test

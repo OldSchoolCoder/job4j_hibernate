@@ -59,7 +59,10 @@ public class Candidate {
         if (this == o) return true;
         if (!(o instanceof Candidate)) return false;
         Candidate candidate = (Candidate) o;
-        return Objects.equals(getId(), candidate.getId()) && Objects.equals(getName(), candidate.getName()) && Objects.equals(getExperience(), candidate.getExperience()) && Objects.equals(getSalary(), candidate.getSalary());
+        return Objects.equals(getId(), candidate.getId()) && Objects.equals(getName(),
+                candidate.getName()) && Objects.equals(getExperience(),
+                candidate.getExperience()) && Objects.equals(getSalary(),
+                candidate.getSalary());
     }
 
     @Override
