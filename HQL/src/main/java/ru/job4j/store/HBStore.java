@@ -7,6 +7,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.query.Query;
 import ru.job4j.model.Candidate;
+import ru.job4j.model.Model;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,24 +34,27 @@ public class HBStore implements Store, AutoCloseable {
         }
     }
 
-    @Override
     public void close() {
         StandardServiceRegistryBuilder.destroy(registry);
     }
 
-    @Override
-    public Candidate add(Candidate candidate) {
-        this.wrapper(session -> session.save(candidate));
-        return candidate;
+    public Model add(Model model) {
+        this.wrapper(session -> session.save(model));
+        return model;
     }
 
     public List<Candidate> getAllCandidates() {
-        return this.wrapper(session -> session.createQuery("from Candidate").list());
+        return this.wrapper(session -> session.createQuery("select distinct " +
+                "c from Candidate c join fetch c.vacancyDB db " +
+                "join fetch db.vacancies").list());
     }
 
     public Optional<Candidate> findById(Integer id) {
         Candidate Candidate = (Candidate) this.wrapper(session -> {
-            final Query query = session.createQuery("from Candidate where id=:fId");
+            final Query query = session.createQuery("select distinct " +
+                            "c from Candidate c join fetch c.vacancyDB db " +
+                            "join fetch db.vacancies v where c.id=:fId",
+                    ru.job4j.model.Candidate.class);
             query.setParameter("fId", id);
             return query.uniqueResult();
         });
@@ -59,18 +63,14 @@ public class HBStore implements Store, AutoCloseable {
 
     public List<Candidate> findByName(String name) {
         return this.wrapper(session -> {
-            final Query query = session.createQuery("from Candidate where name=:fName");
+            final Query query = session.createQuery("select distinct " +
+                            "c from Candidate c join fetch c.vacancyDB db " +
+                            "join fetch db.vacancies v where c.name=:fName",
+                    ru.job4j.model.Candidate.class);
             query.setParameter("fName", name);
             return query.list();
         });
     }
-//        List<Candidate> Candidate = this.wrapper(session -> {
-//            final Query query = session.createQuery("from Candidate where name=:fName");
-//            query.setParameter("fName", name);
-//            return query.list();
-//        });
-//        return Candidate;
-
 
     public void update(Integer id, String name, Integer experience, Integer salary) {
         this.wrapper(session -> session.createQuery("update Candidate c " +

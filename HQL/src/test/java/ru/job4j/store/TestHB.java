@@ -10,6 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ru.job4j.model.Candidate;
+import ru.job4j.model.Vacancy;
+import ru.job4j.model.VacancyDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,9 @@ public class TestHB {
     private SessionFactory sessionFactory;
     private StandardServiceRegistry registry;
     private Candidate candidate;
+    private VacancyDB vacancyDB;
+    private Vacancy vacancy;
+    private List<Vacancy> vacancies = new ArrayList<>();
 
     private <T> T wrapper(final Function<Session, T> command) {
         Session session = sessionFactory.openSession();
@@ -44,7 +49,12 @@ public class TestHB {
         this.registry = new StandardServiceRegistryBuilder().configure().build();
         this.sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         this.store = new HBStore();
-        this.candidate = new Candidate("Ben", 5, 999);
+        this.vacancyDB = new VacancyDB("TestDB", vacancies);
+        this.vacancy = new Vacancy("Coder");
+        this.candidate = new Candidate("Ben", 5, 999, vacancyDB);
+        store.add(vacancy);
+        vacancyDB.addVacancy(vacancy);
+        store.add(vacancyDB);
     }
 
     @After
@@ -62,26 +72,26 @@ public class TestHB {
     @Test
     public void findAllTest() {
         List<Candidate> candidateList = store.getAllCandidates();
-        Assert.assertEquals(3, candidateList.size());
+        Assert.assertEquals(2, candidateList.size());
     }
 
     @Test
     public void findByIdTest() {
-        Optional<Candidate> candidateOptional = store.findById(1);
+        Optional<Candidate> candidateOptional = store.findById(33);
         Assert.assertTrue(candidateOptional.isPresent());
     }
 
     @Test
     public void findByNameTest() {
         List<Candidate> candidates = store.findByName("Ben");
-        Assert.assertTrue(candidates.get(0).getName().equals("Ben"));
+        assertEquals("Ben", candidates.get(0).getName());
     }
 
     @Test
     public void updateTest() {
         store.update(7, "Mike", 8, 888);
         Candidate result = store.findById(7).orElse(new Candidate());
-        Assert.assertTrue(result.getName().equals("Mike"));
+        assertEquals("Mike", result.getName());
     }
 
     @Test
@@ -90,5 +100,4 @@ public class TestHB {
         Optional<Candidate> candidateOptional = store.findById(1);
         Assert.assertTrue(candidateOptional.isEmpty());
     }
-
 }

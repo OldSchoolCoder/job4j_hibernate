@@ -1,7 +1,7 @@
 package ru.job4j.store;
 
-import ru.job4j.model.Candidate;
+import ru.job4j.model.Model;
 
 public interface Store {
-    Candidate add(Candidate candidate);
+    Model add(Model model);
 }

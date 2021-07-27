@@ -5,21 +5,25 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "candidates")
-public class Candidate {
+public class Candidate implements Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private Integer experience;
     private Integer salary;
+    @OneToOne(fetch = FetchType.LAZY)
+    private VacancyDB vacancyDB;
 
     public Candidate() {
     }
 
-    public Candidate(String name, Integer experience, Integer salary) {
+    public Candidate(String name, Integer experience, Integer salary,
+                     VacancyDB vacancyDB) {
         this.name = name;
         this.experience = experience;
         this.salary = salary;
+        this.vacancyDB = vacancyDB;
     }
 
     public Integer getId() {
