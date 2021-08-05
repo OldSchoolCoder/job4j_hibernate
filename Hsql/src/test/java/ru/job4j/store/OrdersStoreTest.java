@@ -14,15 +14,13 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class OrdersStoreTest {
 
     private BasicDataSource pool;
     private OrdersStore store;
     private Order order;
 
-    public void SqlExecute(String fileName) throws SQLException {
+    public void sqlExecute(String fileName) throws SQLException {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(fileName)))
@@ -44,7 +42,7 @@ public class OrdersStoreTest {
         pool.setUsername("sa");
         pool.setPassword("");
         pool.setMaxTotal(2);
-        SqlExecute("./db/update_001.sql");
+        sqlExecute("./db/update_001.sql");
         store.save(order);
     }
 
@@ -77,6 +75,6 @@ public class OrdersStoreTest {
 
     @After
     public void tearDown() throws Exception {
-        SqlExecute("./db/delete.sql");
+        sqlExecute("./db/delete.sql");
     }
 }
